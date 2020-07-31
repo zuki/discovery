@@ -11,6 +11,10 @@ fn main() -> ! {
     aux7::init();
 
     unsafe {
+        ptr::read_volatile(0x4002_2400 as *const u32);
+    }
+/*
+    unsafe {
         // A magic address!
         const GPIOD_BSRR: u32 = 0x4002_0C18;
 
@@ -26,6 +30,7 @@ fn main() -> ! {
         // Turn off the "East" LED
         ptr::write_volatile(GPIOD_BSRR as *mut u32, 1 << (14 + 16));
     }
+*/
 
     loop {}
 }
