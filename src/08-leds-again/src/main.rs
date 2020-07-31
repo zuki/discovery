@@ -6,20 +6,27 @@ use aux8::entry;
 
 #[entry]
 fn main() -> ! {
-    let (gpioe, rcc) = aux8::init();
+    let (gpiod, rcc) = aux8::init();
 
-    // TODO initialize GPIOE
+    // TODO initialize GPIOD
+    rcc.ahb1enr.modify(|_, w| {
+        w.gpioden().set_bit()
+    });
+
+    // Set PD12-PD15 as digital output
+    gpiod.moder.modify(|_, w| {
+        w.moder12().output();
+        w.moder13().output();
+        w.moder14().output();
+        w.moder15().output()
+    });
 
     // Turn on all the LEDs in the compass
-    gpioe.odr.write(|w| {
-        w.odr8().set_bit();
-        w.odr9().set_bit();
-        w.odr10().set_bit();
-        w.odr11().set_bit();
-        w.odr12().set_bit();
+    gpiod.odr.write(|w| {
         w.odr13().set_bit();
         w.odr14().set_bit();
-        w.odr15().set_bit()
+        w.odr15().set_bit();
+        w.odr12().set_bit()
     });
 
     aux8::bkpt();

@@ -7,13 +7,14 @@ extern crate panic_itm; // panic handler
 
 pub use cortex_m::asm::bkpt;
 pub use cortex_m_rt::entry;
-pub use f3::hal::stm32f30x::{gpioc, rcc};
+pub use stm32f407g_disc::gpioi;
+pub use stm32f407g_disc::hal::stm32::rcc;
 
-use f3::hal::stm32f30x::{self, GPIOE, RCC};
+use stm32f407g_disc::hal::stm32::{self, GPIOD, RCC};
 
-pub fn init() -> (&'static gpioc::RegisterBlock, &'static rcc::RegisterBlock) {
+pub fn init() -> (&'static gpioi::RegisterBlock, &'static rcc::RegisterBlock) {
     // restrict access to the other peripherals
-    (stm32f30x::Peripherals::take().unwrap());
+    (stm32::Peripherals::take().unwrap());
 
-    unsafe { (&*GPIOE::ptr(), &*RCC::ptr()) }
+    unsafe { (&*GPIOD::ptr(), &*RCC::ptr()) }
 }
