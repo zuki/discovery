@@ -10,19 +10,19 @@ fn main() -> ! {
 
     unsafe {
         // A magic address!
-        const GPIOE_BSRR: u32 = 0x48001018;
+        const GPIOD_BSRR: u32 = 0x4002_0C18;
 
-        // Turn on the "North" LED (red)
-        *(GPIOE_BSRR as *mut u32) = 1 << 9;
+        // Turn on the "North" LED (orange)
+        *(GPIOD_BSRR as *mut u32) = 1 << 13;
 
-        // Turn on the "East" LED (green)
-        *(GPIOE_BSRR as *mut u32) = 1 << 11;
+        // Turn on the "East" LED (red)
+        *(GPIOD_BSRR as *mut u32) = 1 << 14;
 
         // Turn off the "North" LED
-        *(GPIOE_BSRR as *mut u32) = 1 << (9 + 16);
+        *(GPIOD_BSRR as *mut u32) = 1 << (13 + 16);
 
         // Turn off the "East" LED
-        *(GPIOE_BSRR as *mut u32) = 1 << (11 + 16);
+        *(GPIOD_BSRR as *mut u32) = 1 << (14 + 16);
     }
 
     loop {}

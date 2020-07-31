@@ -8,23 +8,25 @@ extern crate panic_itm; // panic handler
 
 pub use cortex_m::{asm::bkpt, iprint, iprintln, peripheral::ITM};
 pub use cortex_m_rt::entry;
-use f3::{
+use stm32f407g_disc::{
     hal::{
         prelude::*,
-        stm32f30x::gpioc,
-        stm32f30x::{self, GPIOE},
+        stm32::{self, GPIOD},
     },
+    gpioi,
     led::Leds,
 };
 
 #[inline(never)]
-pub fn init() -> (ITM, &'static gpioc::RegisterBlock) {
+pub fn init() -> (ITM, &'static gpioi::RegisterBlock) {
     let cp = cortex_m::Peripherals::take().unwrap();
-    let dp = stm32f30x::Peripherals::take().unwrap();
+    let dp = stm32::Peripherals::take().unwrap();
 
-    let mut rcc = dp.RCC.constrain();
+    let gpiod = dp.GPIOD.split();
+    // ボード上のUser LEDを初期化
+    Leds::new(gpiod);
+    // クロックレジスタをconstrain
+    dp.RCC.constrain();
 
-    Leds::new(dp.GPIOE.split(&mut rcc.ahb));
-
-    (cp.ITM, unsafe { &*GPIOE::ptr() })
+    (cp.ITM, unsafe { &*GPIOD::ptr() })
 }
