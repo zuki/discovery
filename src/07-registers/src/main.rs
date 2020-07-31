@@ -1,58 +1,24 @@
 #![no_main]
 #![no_std]
 
-use core::ptr;
-
 #[allow(unused_imports)]
 use aux7::{entry, iprint, iprintln};
 
 #[entry]
 fn main() -> ! {
-    let mut itm = aux7::init().0;
+    let gpiod = aux7::init().1;
 
-    iprintln!(&mut itm.stim[0], "itm test");
+    // Turn on the "North" LED (orange)
+    gpiod.bsrr.write(|w| w.bs13().set_bit());
 
-    unsafe {
-        // A magic address!
-        const GPIOD_BSRR: u32 = 0x4002_0C18;
-        const GPIOD_ODR:  u32 = 0x4002_0C14;
+    // Turn on the "East" LED (red)
+    gpiod.bsrr.write(|w| w.bs14().set_bit());
 
-        iprintln!(
-            &mut itm.stim[0],
-            "ODR = 0x{:04x}",
-            ptr::read_volatile(GPIOD_ODR as *const u16)
-        );
+    // Turn off the "North" LED
+    gpiod.bsrr.write(|w| w.br13().set_bit());
 
-        // Turn on the "North" LED (orange)
-        ptr::write_volatile(GPIOD_BSRR as *mut u32, 1 << 13);
-
-        iprintln!(
-            &mut itm.stim[0],
-            "ODR = 0x{:04x}",
-            ptr::read_volatile(GPIOD_ODR as *const u16)
-        );
-
-        // Turn on the "East" LED (red)
-        ptr::write_volatile(GPIOD_BSRR as *mut u32, 1 << 14);
-
-        iprintln!(
-            &mut itm.stim[0],
-            "ODR = 0x{:04x}",
-            ptr::read_volatile(GPIOD_ODR as *const u16)
-        );
-
-        // Turn off the "North" LED
-        ptr::write_volatile(GPIOD_BSRR as *mut u32, 1 << (13 + 16));
-
-        iprintln!(
-            &mut itm.stim[0],
-            "ODR = 0x{:04x}",
-            ptr::read_volatile(GPIOD_ODR as *const u16)
-        );
-
-        // Turn off the "East" LED
-        ptr::write_volatile(GPIOD_BSRR as *mut u32, 1 << (14 + 16));
-    }
+    // Turn off the "East" LED
+    gpiod.bsrr.write(|w| w.br14().set_bit());
 
     loop {}
 }
