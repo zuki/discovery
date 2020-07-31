@@ -18,7 +18,7 @@ break main
 # send captured ITM to the file itm.txt
 # (the programmer's SWO pin on the STM32F4DISCOVERY is hard-wired to PB3. Make sure not to use it for a different purpose!)
 # 168000000 is the core clock frequency
-# monitor tpiu config internal itm.txt uart off 168000000
+monitor tpiu config internal itm.txt uart off 168000000
 
 
 # OR: make the microcontroller SWO (PB3) pin output compatible with UART (8N1)
@@ -26,7 +26,7 @@ break main
 # monitor tpiu config external uart off 8000000 2000000
 
 # # enable ITM port 0
-# monitor itm port 0 on
+monitor itm port 0 on
 
 load
 

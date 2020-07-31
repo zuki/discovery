@@ -26,7 +26,8 @@ pub fn init() -> (ITM, &'static gpioi::RegisterBlock) {
     // ボード上のUser LEDを初期化
     Leds::new(gpiod);
     // クロックレジスタをconstrain
-    dp.RCC.constrain();
+    let rcc = dp.RCC.constrain();
+    rcc.cfgr.sysclk(168.mhz()).freeze();
 
     (cp.ITM, unsafe { &*GPIOD::ptr() })
 }
