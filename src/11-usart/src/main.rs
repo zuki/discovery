@@ -10,7 +10,11 @@ fn main() -> ! {
     let (usart, _itm) = aux11::init();
 
     // Send a single character
-    usart.dr.write(|w| w.dr().bits(u16::from(b'X')));
+    for byte in b"The quick brown fox jumps over the lazy dog.".iter() {
+        while usart.sr.read().txe().bit_is_clear() {}
+
+        usart.dr.write(|w| w.dr().bits(u16::from(*byte)));
+    }
 
     loop {}
 }
