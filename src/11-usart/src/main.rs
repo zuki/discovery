@@ -2,11 +2,12 @@
 #![no_main]
 #![no_std]
 
-use core::fmt::{self, Write};
+// use core::fmt::{self, Write};
 
 #[allow(unused_imports)]
 use aux11::{entry, iprint, iprintln, usart1};
 
+/*
 macro_rules! uprint {
     ($serial:expr, $($arg:tt)*) => {
         $serial.write_fmt(format_args!($($arg)*)).ok()
@@ -36,6 +37,7 @@ impl fmt::Write for SerialPort {
         Ok(())
     }
 }
+*/
 
 #[entry]
 fn main() -> ! {
@@ -47,9 +49,14 @@ fn main() -> ! {
 
     loop {
         while usart.sr.read().rxne().bit_is_clear() {}
-
-        let _byte = usart.dr.read().dr().bits() as u8;
-
-        aux11::bkpt();
+        let mut byte = usart.dr.read().dr().bits() as u8;
+    /*
+        byte += 1;
+        if byte > b'~' {
+            byte = b' ';
+        }
+    */
+        while usart.sr.read().txe().bit_is_clear() {}
+        usart.dr.write(|w| w.dr().bits(u16::from(byte)));
     }
 }
