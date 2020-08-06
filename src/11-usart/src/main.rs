@@ -41,9 +41,15 @@ impl fmt::Write for SerialPort {
 fn main() -> ! {
     let (usart, _dwt, _itm) = aux11::init();
 
-    let mut serial = SerialPort { usart1: usart };
+    //let mut serial = SerialPort { usart1: usart };
 
-    uprintln!(serial, "The anser is {}", 40 + 2);
+    //uprintln!(serial, "The anser is {}", 40 + 2);
 
-    loop {}
+    loop {
+        while usart.sr.read().rxne().bit_is_clear() {}
+
+        let _byte = usart.dr.read().dr().bits() as u8;
+
+        aux11::bkpt();
+    }
 }
